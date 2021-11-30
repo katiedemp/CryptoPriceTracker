@@ -1,10 +1,11 @@
 {
   "expo": {
+    "owner": "hey-world",
     "name": "CryptoPriceTracker",
     "slug": "CryptoPriceTracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/crypto-tracker.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -27,6 +28,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Coinbase Crypto Price Tracker",
+    "githubUrl": "https://github.com/katiedemp/CryptoPriceTracker/"
   }
 }
