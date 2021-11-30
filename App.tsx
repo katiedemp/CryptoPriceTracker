@@ -1,9 +1,18 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import ListItem from './components/ListItem';
 import { BottomSheetModal, BottomSheetModalProvider, } from '@gorhom/bottom-sheet';
-import { SAMPLE_DATA } from './assets/data/sampleData.js';
 import Chart from "./components/Chart";
+import { getMarketdata } from "./services/cryptoService";
+
+type selectedCoinDataType = {
+  current_price: number;
+  image: string;
+  name: string;
+  symbol: string;
+  price_change_percentage_7d_in_currency: number;
+  sparkline_in_7d: { price: string };
+}
 
 const ListHeader = () => (
   <>
@@ -15,12 +24,23 @@ const ListHeader = () => (
 )
 
 export default function App() {
-  const [selectedCoinData, setSelectedCoinData] = useState();
+  const [data, setData] = useState<any>([]);
+  const [selectedCoinData, setSelectedCoinData] = useState<selectedCoinDataType>();
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      const marketData = await getMarketdata();
+      setData(marketData);
+    }
+
+    fetchMarketData()
+  }, []);
+
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['45%'], []);
 
-  const openModal = (item: any) => {
+  const openModal = (item: any): void => {
     setSelectedCoinData(item);
     bottomSheetModalRef.current?.present();
   }
@@ -29,7 +49,7 @@ export default function App() {
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
         {/* Render list items */}
-        <FlatList keyExtractor={(item) => item.id} data={SAMPLE_DATA} renderItem={({item}) => (
+        <FlatList keyExtractor={(item) => item.id} data={data} renderItem={({item}) => (
           <ListItem
             name={item.name}
             symbol={item.symbol}
@@ -53,12 +73,12 @@ export default function App() {
         <View style={styles.contentContainer}>
           {selectedCoinData &&
           <Chart
-              currentPrice={selectedCoinData.current_price}
-              logoUrl={selectedCoinData.image}
-              name={selectedCoinData.name}
-              symbol={selectedCoinData.symbol}
-              priceChangePercentage7d={selectedCoinData.price_change_percentage_7d_in_currency}
-              sparkline={selectedCoinData.sparkline_in_7d.price}
+              currentPrice={selectedCoinData?.current_price}
+              logoUrl={selectedCoinData?.image}
+              name={selectedCoinData?.name}
+              symbol={selectedCoinData?.symbol}
+              priceChangePercentage7d={selectedCoinData?.price_change_percentage_7d_in_currency}
+              sparkline={selectedCoinData?.sparkline_in_7d.price}
           />
           }
         </View>
