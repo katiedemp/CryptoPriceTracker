@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Image, Text, EventEmitter} from 'react-native';
+import { EventEmitter, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type ListItemProps = {
   name: string;
@@ -24,7 +24,7 @@ const ListItem = ({
       <View style={styles.itemWrapper}>
         {/* Left Side */}
         <View style={styles.leftWrapper}>
-          <Image style={styles.image} source={{ logoUrl }} />
+          <Image style={styles.image} source={{logoUrl}}/>
           <View style={styles.titlesWrapper}>
             <Text style={styles.title}>{name}</Text>
             <Text style={styles.subtitle}>{symbol.toUpperCase()}</Text>
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
   rightWrapper: {
     alignItems: 'flex-end',
   },
-  redColor: { color: '#FF3B30' },
-  greenColor: { color: '#34C759'},
+  redColor: {color: '#FF3B30'},
+  greenColor: {color: '#34C759'},
 });
 
 export default ListItem;
