@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useMemo, useRef} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import ListItem from './components/ListItem';
+import {
+    BottomSheetModal,
+    BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 import { SAMPLE_DATA } from './assets/data/sampleData.js';
 
 const ListHeader = () => (
@@ -13,23 +17,42 @@ const ListHeader = () => (
 )
 
 export default function App() {
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const snapPoints = useMemo(() => ['50%'], []);
+
+    const openModal = () => {
+        bottomSheetModalRef.current?.present();
+    }
+
   return (
-    <SafeAreaView style={styles.container}>
-        {/* Render list items */}
-        <FlatList keyExtractor={(item) => item.id} data={SAMPLE_DATA} renderItem={({item}) => (
-            <ListItem
-                name={item.name}
-                symbol={item.symbol}
-                currentPrice={item.current_price}
-                priceChangePercentage7d={
-                    item.price_change_percentage_7d_in_currency
-                }
-                logoUrl={item.image}
+      <BottomSheetModalProvider>
+        <SafeAreaView style={styles.container}>
+            {/* Render list items */}
+            <FlatList keyExtractor={(item) => item.id} data={SAMPLE_DATA} renderItem={({item}) => (
+                <ListItem
+                    name={item.name}
+                    symbol={item.symbol}
+                    currentPrice={item.current_price}
+                    priceChangePercentage7d={
+                        item.price_change_percentage_7d_in_currency
+                    }
+                    logoUrl={item.image}
+                    onPress={() => openModal()}
+                />
+            )}
+            ListHeaderComponent={<ListHeader />}
             />
-        )}
-        ListHeaderComponent={<ListHeader />}
-        />
-    </SafeAreaView>
+        </SafeAreaView>
+          <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          >
+              <View style={styles.contentContainer}>
+                  <Text>Awesome 🎉</Text>
+              </View>
+          </BottomSheetModal>
+      </BottomSheetModalProvider>
   );
 }
 

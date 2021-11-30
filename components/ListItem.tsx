@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image, Text, EventEmitter} from 'react-native';
 
 type ListItemProps = {
   name: string;
@@ -7,6 +7,7 @@ type ListItemProps = {
   currentPrice: number;
   priceChangePercentage7d: number;
   logoUrl: string;
+  onPress: EventEmitter;
 };
 
 const ListItem = ({
@@ -15,10 +16,11 @@ const ListItem = ({
   currentPrice,
   priceChangePercentage7d,
   logoUrl,
+  onPress,
 }: ListItemProps): JSX.Element => {
   const priceChangeColour = priceChangePercentage7d > 0 ? styles.greenColor : styles.redColor;
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.itemWrapper}>
         {/* Left Side */}
         <View style={styles.leftWrapper}>
