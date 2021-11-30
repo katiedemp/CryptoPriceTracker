@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { ChartDot, ChartPath, ChartPathProvider, ChartYLabel } from '@rainbow-me/animated-charts'
 
 type ChartProps = {
   name: string;
@@ -9,6 +10,8 @@ type ChartProps = {
   logoUrl: string;
   sparkline: any;
 }
+
+export const {width: SIZE} = Dimensions.get('window');
 
 const Chart = ({
   name,
@@ -20,34 +23,57 @@ const Chart = ({
 }: ChartProps): JSX.Element => {
   const priceChangeColour = priceChangePercentage7d > 0 ? styles.greenColor : styles.redColor;
 
-  return (
-    <View style={styles.chartWrapper}>
+  const formatUSD = (value: string) => {
+    'worklet';
+    if (value === '') {
+      return `$${currentPrice.toLocaleString('en-US', {currency: 'USD'})}`;
+    }
 
-      {/* Titles */}
-      <View style={styles.titlesWrapper}>
-        <View style={styles.upperTitles}>
-          <View style={styles.upperLeftTitle}>
-            <Image source={{uri: logoUrl}} style={styles.image}/>
-            <Text style={styles.subtitle}>{name} ({symbol.toUpperCase()})</Text>
+    return `$${parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+  };
+
+  return (
+    <ChartPathProvider data={{points: sparkline, smoothingStrategy: 'bezier'}}>
+      <View style={styles.chartWrapper}>
+
+        {/* Titles */}
+        <View style={styles.titlesWrapper}>
+          <View style={styles.upperTitles}>
+            <View style={styles.upperLeftTitle}>
+              <Image source={{uri: logoUrl}} style={styles.image}/>
+              <Text style={styles.subtitle}>{name} ({symbol.toUpperCase()})</Text>
+            </View>
+
+            <Text style={styles.subtitle}>7d</Text>
           </View>
 
-          <Text style={styles.subtitle}>7d</Text>
-        </View>
-
-        <View style={styles.lowerTitles}>
-          <Text style={styles.boldTitle}>${currentPrice.toLocaleString('en-US', {currency: 'USD'})}</Text>
-          <Text style={[styles.title, priceChangeColour]}>{priceChangePercentage7d.toFixed(2)}%</Text>
+          <View style={styles.lowerTitles}>
+            <ChartYLabel
+              format={formatUSD}
+              style={styles.boldTitle}
+            />
+            {/*<Text style={styles.boldTitle}>${currentPrice.toLocaleString('en-US', {currency: 'USD'})}</Text>*/}
+            <Text style={[styles.title, priceChangeColour]}>{priceChangePercentage7d.toFixed(2)}%</Text>
+          </View>
         </View>
       </View>
-    </View>
+
+      {/* Chart */}
+      <View style={styles.chartLineWrapper}>
+        <ChartPath height={SIZE / 2} stroke="black" width={SIZE}/>
+        <ChartDot style={{backgroundColor: 'black'}}/>
+      </View>
+    </ChartPathProvider>
   );
 }
 
 const styles = StyleSheet.create({
   chartWrapper: {
-    margin: 16,
+    marginTop: 10,
   },
-  titlesWrapper: {},
+  titlesWrapper: {
+    marginHorizontal: 16,
+  },
   upperTitles: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -81,6 +107,9 @@ const styles = StyleSheet.create({
   },
   redColor: {color: '#FF3B30'},
   greenColor: {color: '#34C759'},
+  chartLineWrapper: {
+    marginTop: 40,
+  }
 })
 
 export default Chart;
