@@ -1,23 +1,35 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import ListItem from './components/ListItem';
+import { SAMPLE_DATA } from './assets/data/sampleData.js';
+
+const ListHeader = () => (
+    <>
+        <View style={styles.titleWrapper}>
+            <Text style={styles.largeTitle as any}>Markets</Text>
+        </View>
+        <View style={styles.divider} />
+    </>
+)
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <View style={styles.titleWrapper}>
-        <Text style={styles.largeTitle as any}>Markets</Text>
-      </View>
-      <View style={styles.divider} />
-
-      <ListItem
-        name={name}
-        symbol={symbol}
-        currentPrice={current_price}
-        priceChangePercentage7d={price_change_percentage_7d_in_currency}
-        logoUrl={image}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+        {/* Render list items */}
+        <FlatList keyExtractor={(item) => item.id} data={SAMPLE_DATA} renderItem={({item}) => (
+            <ListItem
+                name={item.name}
+                symbol={item.symbol}
+                currentPrice={item.current_price}
+                priceChangePercentage7d={
+                    item.price_change_percentage_7d_in_currency
+                }
+                logoUrl={item.image}
+            />
+        )}
+        ListHeaderComponent={<ListHeader />}
+        />
+    </SafeAreaView>
   );
 }
 
@@ -27,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   titleWrapper: {
-    marginTop: 80,
+    marginTop: 20,
     paddingHorizontal: 16,
   },
   largeTitle: {
@@ -35,8 +47,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#A9ABB1',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#A9ABB1',
     marginHorizontal: 16,
     marginTop: 16,
   },

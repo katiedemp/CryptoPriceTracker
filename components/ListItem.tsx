@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Text,
-  ImageSourcePropType,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 
 type ListItemProps = {
   name: string;
@@ -23,6 +16,7 @@ const ListItem = ({
   priceChangePercentage7d,
   logoUrl,
 }: ListItemProps): JSX.Element => {
+  const priceChangeColour = priceChangePercentage7d > 0 ? styles.greenColor : styles.redColor;
   return (
     <TouchableOpacity>
       <View style={styles.itemWrapper}>
@@ -31,15 +25,15 @@ const ListItem = ({
           <Image style={styles.image} source={{ logoUrl }} />
           <View style={styles.titlesWrapper}>
             <Text style={styles.title}>{name}</Text>
-            <Text style={styles.subtitle}>{symbol}</Text>
+            <Text style={styles.subtitle}>{symbol.toUpperCase()}</Text>
           </View>
         </View>
 
         {/* Right Side */}
         <View style={styles.rightWrapper}>
-          <Text style={styles.title}>{currentPrice}</Text>
-          <Text style={[styles.subtitle, styles.color]}>
-            {priceChangePercentage7d}
+          <Text style={styles.title}>${currentPrice.toLocaleString('en-US', {currency: 'USD'})}</Text>
+          <Text style={[styles.subtitle, priceChangeColour]}>
+            {priceChangePercentage7d.toFixed(2)}%
           </Text>
         </View>
       </View>
@@ -77,7 +71,8 @@ const styles = StyleSheet.create({
   rightWrapper: {
     alignItems: 'flex-end',
   },
-  color: { color: 'red' },
+  redColor: { color: '#FF3B30' },
+  greenColor: { color: '#34C759'},
 });
 
 export default ListItem;
