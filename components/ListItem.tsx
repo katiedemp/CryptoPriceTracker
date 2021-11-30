@@ -19,12 +19,13 @@ const ListItem = ({
   onPress,
 }: ListItemProps): JSX.Element => {
   const priceChangeColour = priceChangePercentage7d > 0 ? styles.greenColor : styles.redColor;
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.itemWrapper}>
         {/* Left Side */}
         <View style={styles.leftWrapper}>
-          <Image style={styles.image} source={{logoUrl}}/>
+          <Image source={{uri: logoUrl}} style={styles.image}/>
           <View style={styles.titlesWrapper}>
             <Text style={styles.title}>{name}</Text>
             <Text style={styles.subtitle}>{symbol.toUpperCase()}</Text>

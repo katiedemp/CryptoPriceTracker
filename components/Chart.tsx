@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import { ChartDot, ChartPath, ChartPathProvider, ChartYLabel } from '@rainbow-me/animated-charts'
+import { useSharedValue } from "react-native-reanimated";
 
 type ChartProps = {
   name: string;
@@ -21,12 +22,24 @@ const Chart = ({
   logoUrl,
   sparkline
 }: ChartProps): JSX.Element => {
+  const latestCurrentPrice = useSharedValue(currentPrice);
+  const [chartReady, setChartReady] = useState(false);
   const priceChangeColour = priceChangePercentage7d > 0 ? styles.greenColor : styles.redColor;
+
+  useEffect(() => {
+    latestCurrentPrice.value = currentPrice;
+
+    setTimeout(() => {
+      setChartReady(true);
+    }, 0)
+
+  }, [currentPrice]);
+
 
   const formatUSD = (value: string) => {
     'worklet';
     if (value === '') {
-      return `$${currentPrice.toLocaleString('en-US', {currency: 'USD'})}`;
+      return `$${latestCurrentPrice.value.toLocaleString('en-US', {currency: 'USD'})}`;
     }
 
     return `$${parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
@@ -52,17 +65,18 @@ const Chart = ({
               format={formatUSD}
               style={styles.boldTitle}
             />
-            {/*<Text style={styles.boldTitle}>${currentPrice.toLocaleString('en-US', {currency: 'USD'})}</Text>*/}
             <Text style={[styles.title, priceChangeColour]}>{priceChangePercentage7d.toFixed(2)}%</Text>
           </View>
         </View>
       </View>
 
       {/* Chart */}
+      {chartReady &&
       <View style={styles.chartLineWrapper}>
-        <ChartPath height={SIZE / 2} stroke="black" width={SIZE}/>
-        <ChartDot style={{backgroundColor: 'black'}}/>
+          <ChartPath height={SIZE / 2} stroke="black" width={SIZE}/>
+          <ChartDot style={{backgroundColor: 'black'}}/>
       </View>
+      }
     </ChartPathProvider>
   );
 }
